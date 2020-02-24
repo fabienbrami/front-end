@@ -17,3 +17,11 @@ by
   padding: 10px 0;
 }
 ```
+
+
+
+voir pour : https://github.com/tektoncd/catalog/tree/master/s2i
+webhook
+https://github.com/tektoncd/triggers/blob/master/docs/getting-started/README.md
+
+https://itnext.io/node-js-ci-with-tekton-pipelines-15381e7034c6
