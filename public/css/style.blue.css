@@ -19,9 +19,9 @@ h1 {
   font-size: 40px;
 }
 #top {
-/*  background: #555555;*/
+  background: #555555;
 /* Modify the Color HERE */
-  background: #01a982;
+/*  background: #01a982; */
   padding: 10px 0;
 }
 #top .offer {
