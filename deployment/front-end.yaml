@@ -40,7 +40,5 @@ spec:
     nodePort: 30001
   selector:
     name: front-end
-    app: front-end
-    deploymentconfig: front-end
 status:
   loadBalancer: {}
