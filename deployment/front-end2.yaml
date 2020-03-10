@@ -35,7 +35,7 @@ metadata:
     name: front-end
   namespace: socks-shop
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
     - name: web
       port: 80
