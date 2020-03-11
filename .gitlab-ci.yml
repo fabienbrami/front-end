@@ -23,6 +23,7 @@ production:
   - echo $command
   - echo $CI_BUILD_NAME
   - echo $CI_BUILD_ID
-#  - ssh root@10.3.61.79 $command
+  - output=`ssh root@10.3.61.79 $command|tail -1`
+  - ssh root@10.3.61.79 $output
   only:
   - master
