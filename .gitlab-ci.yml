@@ -21,7 +21,7 @@ production:
   script:
   - id
   - echo $CI_BUILD_REF
-  - echo $CI_BUILD_TAG
+  - echo $CI_BUILD_TRIGGERED
 #  - sshpass -p HybridIT@cic /usr/bin/ssh -o StrictHostKeyChecking=no root@dockermaster2.hybridit.hpecic.net "cd /tmp/ci && ./script.sh $CI_BUILD_REF"
   only:
   - master
