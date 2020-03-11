@@ -19,9 +19,10 @@ tests:
 production:
   type: deploy
   script:
-  - id
+  - command=tkn pipeline start tutorial-pipeline -n socks-shop -s tutorial-service -r source-repo=socks-git -r web-image=socks-image -p revision=1.0.$CI_BUILD_ID
+  - echo $command
   - echo $CI_BUILD_NAME
   - echo $CI_BUILD_ID
-  - ssh root@10.3.61.79 'tkn pipeline start tutorial-pipeline -n socks-shop -s tutorial-service -r source-repo=socks-git -r web-image=socks-image -p revision=1.0.$CI_BUILD_ID'
+#  - ssh root@10.3.61.79 $command
   only:
   - master
