@@ -1,0 +1,27 @@
+cache:
+  paths:
+  - node_modules/
+
+before_script:
+  - mkdir -p ~/.ssh
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+  - chmod 700 ~/.ssh/id_rsa
+  - eval "$(ssh-agent -s)"
+  - ssh-add ~/.ssh/id_rsa
+  - ssh-keyscan -H '10.3.61.79' >> ~/.ssh/known_hosts
+
+tests:
+  script:
+  - hostname
+  - NODE_ENV=dev npm install
+  - PORT=8079 npm test
+
+production:
+  type: deploy
+  script:
+  - id
+  - echo $CI_BUILD_REF
+  - echo $CI_BUILD_TAG
+#  - sshpass -p HybridIT@cic /usr/bin/ssh -o StrictHostKeyChecking=no root@dockermaster2.hybridit.hpecic.net "cd /tmp/ci && ./script.sh $CI_BUILD_REF"
+  only:
+  - master
