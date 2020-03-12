@@ -10,11 +10,11 @@ before_script:
   - ssh-add ~/.ssh/id_rsa
   - ssh-keyscan -H '10.3.61.79' >> ~/.ssh/known_hosts
 
-tests:
-  script:
-  - hostname
-  - NODE_ENV=dev npm install
-  - PORT=8079 npm test
+#tests:
+#  script:
+#  - hostname
+#  - NODE_ENV=dev npm install
+#  - PORT=8079 npm test
 
 production:
   type: deploy
