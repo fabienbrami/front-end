@@ -41,7 +41,6 @@ release:
   stage: release
   image: docker:latest
   script:
-    - cd ${APP_PATH}/release
     - docker login -u ${DOCKERUSERNAME} -p ${DOCKERTOKEN} ${CI_REGISTRY}
     - docker build -t ${CONTAINER_IMAGE} .
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:latest
