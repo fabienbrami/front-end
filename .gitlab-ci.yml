@@ -43,8 +43,6 @@ release:
     - docker tag ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID ${CONTAINER_IMAGE}:latest
     - docker push ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID
     - docker push ${CONTAINER_IMAGE}:latest
-	
-
 
 test:
   stage: test
