@@ -14,7 +14,8 @@ cache:
   
 release:
   stage: release
-  services: docker:19.03.0-dind
+  services: 
+    - docker:19.03.0-dind
   image: docker:19.03.0
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} 
