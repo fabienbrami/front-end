@@ -8,14 +8,30 @@ cache:
   paths:
   - node_modules/
   - .yarn
+  
+.docker_registry_template: &docker_registry
+  image: docker:git
+  services:
+    - docker:dind
+  before_script:
+    - export REVISION=$(git rev-parse --short HEAD)
+    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${CI_REGISTRY}
+  after_script:
+    - docker logout ${CI_REGISTRY}
+
+Build Docker Image:
+  stage: docker
+  <<: *docker_registry
+  script:
+    - docker build -t some-docker-name:${REVISION} .
+    - docker push some-docker-name:${REVISION}
 
 
 release:
   stage: release
   image: docker:latest
   script:
-    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${CI_REGISTRY}
-    - systemctl start docker
+#    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${CI_REGISTRY}
     - docker build -t ${CONTAINER_IMAGE} .
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:latest
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID
