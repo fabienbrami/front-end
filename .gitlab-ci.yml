@@ -15,7 +15,7 @@ before_script:
 
 Build:
   stage: build
-  image: alpine:latest
+  image: node:9.4.0
   tags:
     - node
   before_script: 
@@ -26,7 +26,7 @@ Build:
 
 Test:
   stage: test
-  image: alpine:latest
+  image: node:9.4.0
   tags:
   - node
   before_script: 
