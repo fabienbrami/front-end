@@ -9,16 +9,14 @@ cache:
   - node_modules/
   - .yarn
 
-before_script:
-  - apt-get update -qq && apt-get install -qy libelf1
-  - export PATH=$HOME/.yarn/bin:$PATH
-
 Build:
   stage: build
   image: node:9.4.0
   tags:
     - node
   before_script: 
+    - apt-get update -qq && apt-get install -qy libelf1
+    - export PATH=$HOME/.yarn/bin:$PATH
     - yarn config set cache-folder .yarn
     - yarn install 
   script:
@@ -30,6 +28,8 @@ Test:
   tags:
   - node
   before_script: 
+    - apt-get update -qq && apt-get install -qy libelf1
+    - export PATH=$HOME/.yarn/bin:$PATH
     - yarn config set cache-folder .yarn
     - yarn install --frozen-lockfile
   script:
