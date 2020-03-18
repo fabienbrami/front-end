@@ -3,10 +3,15 @@ stages:
   - build
   - release
   - deploy
-  
+
 cache:
   paths:
   - node_modules/
+  - .yarn
+
+before_script:
+  - apt-get update -qq && apt-get install -qy libelf1
+  - export PATH=$HOME/.yarn/bin:$PATH
 
 Build:
   stage: build
