@@ -28,7 +28,7 @@ release:
     - docker push ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID
     - docker push ${CONTAINER_IMAGE}:latest
 
-deploy_staging:
+deploy:
   stage: deploy
   image: lwolf/helm-kubectl-docker:v152_213
   before_script:
