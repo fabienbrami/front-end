@@ -33,9 +33,9 @@ Test:
     - yarn config set cache-folder .yarn
     - yarn install --frozen-lockfile
   script:
-    - hostname
-	- NODE_ENV=dev npm install
- 	- PORT=8079 npm test
+     - hostname
+     - NODE_ENV=dev npm install
+     - PORT=8079 npm test
 
 release:
   stage: release
