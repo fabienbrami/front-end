@@ -1,5 +1,5 @@
 variables:
-  DOCKER_HOST: tcp://$hostname:2375
+  DOCKER_HOST: tcp://localhost:2376
 
 
 stages:
@@ -26,8 +26,8 @@ release:
   stage: release
   <<: *docker_registry
   script:
-#    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${CI_REGISTRY}
-    - hostname
+    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${CI_REGISTRY}
+    - docker ps
     - docker build -t ${CONTAINER_IMAGE} .
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:latest
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID
