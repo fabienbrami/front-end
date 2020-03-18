@@ -9,39 +9,13 @@ cache:
   - node_modules/
   - .yarn
 
-Build:
-  stage: build
-  image: node:9.4.0
-  tags:
-    - node
-  before_script: 
-    - apt-get update -qq && apt-get install -qy libelf1
-    - export PATH=$HOME/.yarn/bin:$PATH
-    - yarn config set cache-folder .yarn
-    - yarn install 
-  script:
-    - npm install
-
-Test:
-  stage: test
-  image: node:9.4.0
-  tags:
-  - node
-  before_script: 
-    - apt-get update -qq && apt-get install -qy libelf1
-    - export PATH=$HOME/.yarn/bin:$PATH
-    - yarn config set cache-folder .yarn
-    - yarn install --frozen-lockfile
-  script:
-     - hostname
-     - NODE_ENV=dev npm install
-     - PORT=8079 npm test
 
 release:
   stage: release
   image: docker:latest
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${CI_REGISTRY}
+    - systemctl start docker
     - docker build -t ${CONTAINER_IMAGE} .
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:latest
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID
