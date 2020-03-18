@@ -2,31 +2,67 @@ cache:
   paths:
   - node_modules/
 
-before_script:
-  - mkdir -p ~/.ssh
-  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-  - chmod 700 ~/.ssh/id_rsa
-  - eval "$(ssh-agent -s)"
-  - ssh-add ~/.ssh/id_rsa
-  - ssh-keyscan -H '10.3.61.79' >> ~/.ssh/known_hosts
-
-#tests:
-#  script:
-#  - hostname
-#  - NODE_ENV=dev npm install
-#  - PORT=8079 npm test
-
-production:
-  type: deploy
+Build:
+  stage: build
+  image: alpine:latest
+  tags:
+    - node
+  before_script: 
+    - yarn config set cache-folder .yarn
+    - yarn install 
   script:
-  - command="tkn pipeline start tutorial-pipeline -n socks-shop -s tutorial-service -r source-repo=socks-git -r web-image=socks-image -p revision=1.0.$CI_BUILD_ID"
-  - echo $command
-  - echo $CI_COMMIT_ID
-  - echo $CI_BUILD_ID
-  - output=`ssh root@10.3.61.79 $command|tail -1`
-  - ssh root@10.3.61.79 $output
-  environment:
-        name: prod
-        url: http://10.3.61.42
+    - npm run build
+
+Test:
+  stage: test
+  image: alpine:latest
+  tags:
+  - node
+  before_script: 
+    - yarn config set cache-folder .yarn
+    - yarn install --frozen-lockfile
+  script:
+  # Installs Chrome
+    - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub |  apt-key add -
+    - echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' |  tee /etc/apt/sources.list.d/google-chrome.list
+    - apt-get update 
+    - apt-get install google-chrome-stable -y
+  # Runs the tests.
+    - npm run test:karma-headless
+
+
+
+
+release:
+  stage: release
+  image: docker:latest
+  script:
+    - cd ${APP_PATH}/release
+    - docker login -u ${DOCKERUSERNAME} -p ${DOCKERTOKEN} ${CI_REGISTRY}
+    - docker build -t ${CONTAINER_IMAGE} .
+    - docker tag ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID ${CONTAINER_IMAGE}:latest
+    - docker push ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID
+    - docker push ${CONTAINER_IMAGE}:latest
+	
+
+
+test:
+  stage: test
+  image: alpine:latest
+#  services:
+#    - postgres:9.6
+  script:
+    - hostname
+	- NODE_ENV=dev npm install
+ 	- PORT=8079 npm test
+
+deploy_staging:
+  stage: deploy
+  image: lwolf/helm-kubectl-docker:v152_213
+  before_script:
+    - mkdir -p /etc/deploy
+    - echo ${KUBECONFIG} | base64 -d > ${KUBECONFIG}
+    - kubectl config set-context $(kubectl config current-context) --namespace=socks-shop
+    - kubectl set image deployment.apps/front-end front-end=${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID --record
   only:
   - master
