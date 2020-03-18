@@ -13,18 +13,9 @@ cache:
   - node_modules/
   - .yarn
   
-.docker_registry_template: &docker_registry
-  image: docker:18.09.7-dind
-  before_script:
-    - export REVISION=$(git rev-parse --short HEAD)
-    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${CI_REGISTRY}
-  after_script:
-    - docker logout ${CI_REGISTRY}
-
-
 release:
   stage: release
-  <<: *docker_registry
+  image: docker:18.09.7-dind
   script:
     - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} 
     - docker ps
