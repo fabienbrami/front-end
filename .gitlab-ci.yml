@@ -13,6 +13,35 @@ cache:
   paths:
   - node_modules/
   - .yarn
+
+Build:
+  stage: build
+  image: node:9.4.0
+  tags:
+    - node
+  before_script: 
+    - apt-get update -qq && apt-get install -qy libelf1
+    - export PATH=$HOME/.yarn/bin:$PATH
+    - yarn config set cache-folder .yarn
+    - yarn install 
+  script:
+    - npm install
+
+Test:
+  stage: test
+  image: node:9.4.0
+  tags:
+  - node
+  before_script: 
+    - apt-get update -qq && apt-get install -qy libelf1
+    - export PATH=$HOME/.yarn/bin:$PATH
+    - yarn config set cache-folder .yarn
+    - yarn install --frozen-lockfile
+  script:
+     - hostname
+     - NODE_ENV=dev npm install
+     - PORT=8079 npm test
+
   
 release:
   stage: release
