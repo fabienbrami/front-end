@@ -1,0 +1,32 @@
+cache:
+  paths:
+  - node_modules/
+
+before_script:
+  - mkdir -p ~/.ssh
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+  - chmod 700 ~/.ssh/id_rsa
+  - eval "$(ssh-agent -s)"
+  - ssh-add ~/.ssh/id_rsa
+  - ssh-keyscan -H '10.3.61.79' >> ~/.ssh/known_hosts
+
+#tests:
+#  script:
+#  - hostname
+#  - NODE_ENV=dev npm install
+#  - PORT=8079 npm test
+
+production:
+  type: deploy
+  script:
+  - command="tkn pipeline start tutorial-pipeline -n socks-shop -s tutorial-service -r source-repo=socks-git -r web-image=socks-image -p revision=1.0.$CI_BUILD_ID"
+  - echo $command
+  - echo $CI_COMMIT_ID
+  - echo $CI_BUILD_ID
+  - output=`ssh root@10.3.61.79 $command|tail -1`
+  - ssh root@10.3.61.79 $output
+  environment:
+        name: prod
+        url: http://10.3.61.42
+  only:
+  - master
