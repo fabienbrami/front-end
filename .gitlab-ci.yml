@@ -2,6 +2,7 @@ variables:
   DOCKER_DRIVER: overlay2
   DOCKER_HOST: tcp://localhost:2375
   DOCKER_TLS_CERTDIR: ""
+  KUBECONFIG: /etc/deploy/config
   
 stages:
   - test
@@ -20,7 +21,7 @@ deploy:
   before_script:
     - mkdir -p /etc/deploy
 #    - sleep 1000
-    - echo ${KUBECONFIG} > toto
+    - echo ${kube_config} | base64 -d > ${KUBECONFIG}
     - sleep 1000
     - kubectl config set-context $(kubectl config current-context) --namespace=socks-shop
   script:
