@@ -20,7 +20,8 @@ deploy:
   before_script:
     - mkdir -p /etc/deploy
 #    - sleep 1000
-    - echo ${KUBECONFIG} > /root/.kube/config
+    - echo ${KUBECONFIG} > config
+    - sleep 1000
     - kubectl config set-context $(kubectl config current-context) --namespace=socks-shop
   script:
     - kubectl set image deployment.apps/front-end front-end=${CONTAINER_IMAGE} --record
