@@ -15,9 +15,23 @@ cache:
   - node_modules/
   - .yarn
 
+release:
+  stage: release
+  services: 
+    - docker:19.03.0-dind
+  image: docker:19.03.0
+  script:
+    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${CI_REGISTRY}
+    - docker build -t ${CONTAINER_IMAGE} .
+    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:latest
+    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID
+    #    - sleep 1000
+    - docker push ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID
+    - docker push ${CONTAINER_IMAGE}:latest
+
 deploy:
   stage: deploy
-  image: lwolf/helm-kubectl-docker:v152_213
+  image: dtzar/helm-kubectl
   before_script:
     - mkdir -p /etc/deploy
 #    - sleep 1000
@@ -25,6 +39,7 @@ deploy:
 #    - sleep 1000
     - kubectl config set-context $(kubectl config current-context) --namespace=socks-shop
   script:
-    - kubectl set image deployment.apps/front-end front-end=${CONTAINER_IMAGE} --record
+    - sleep 1000
+    - kubectl set image deployment.apps/front-end front-end=${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID --record
   only:
   - master
