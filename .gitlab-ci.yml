@@ -66,8 +66,8 @@ deploy_anthos:
     - echo ${anthos} | base64 -d > ${KUBECONFIG}
     - kubectl config set-context $(kubectl config current-context) --namespace=socks-shop
   script:
-#    - sleep 10
     - deployment=`kubectl get pods |grep front`
+    - sleep 1000
     - if [ -z "$deployment" ]; then kubectly apply -f deployment/front-end2.yaml; else kubectl set image deployment.apps/front-end front-end=${CONTAINER_IMAGE}:1.1.$CI_PIPELINE_IID --record;fi
   only:
   - master
