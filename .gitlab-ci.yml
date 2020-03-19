@@ -40,7 +40,7 @@ release:
     - docker build -t ${CONTAINER_IMAGE} .
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:latest
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID
-    #    - sleep 1000
+    - sleep 100
     - docker push ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID
     - docker push ${CONTAINER_IMAGE}:latest
 
