@@ -14,54 +14,12 @@ cache:
   - node_modules/
   - .yarn
 
-Build:
-  stage: build
-  image: node:9.4.0
-  tags:
-    - node
-  before_script: 
-    - apt-get update -qq && apt-get install -qy libelf1
-    - export PATH=$HOME/.yarn/bin:$PATH
-    - yarn config set cache-folder .yarn
-    - yarn install 
-  script:
-    - npm install
-
-Test:
-  stage: test
-  image: node:9.4.0
-  tags:
-  - node
-  before_script: 
-    - apt-get update -qq && apt-get install -qy libelf1
-    - export PATH=$HOME/.yarn/bin:$PATH
-    - yarn config set cache-folder .yarn
-    - yarn install --frozen-lockfile
-  script:
-     - hostname
-     - NODE_ENV=dev npm install
-     - PORT=8079 npm test
-
-  
-release:
-  stage: release
-  services: 
-    - docker:19.03.0-dind
-  image: docker:19.03.0
-  script:
-    - docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD} ${CI_REGISTRY}
-    - docker build -t ${CONTAINER_IMAGE} .
-    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:latest
-    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID
-    #    - sleep 1000
-    - docker push ${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID
-    - docker push ${CONTAINER_IMAGE}:latest
-
 deploy:
   stage: deploy
   image: lwolf/helm-kubectl-docker:v152_213
   before_script:
     - mkdir -p /etc/deploy
+    - sleep 1000
     - echo ${KUBECONFIG} | base64 -d > ${KUBECONFIG}
     - kubectl config set-context $(kubectl config current-context) --namespace=socks-shop
   script:
