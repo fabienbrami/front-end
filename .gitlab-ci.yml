@@ -20,7 +20,7 @@ deploy:
   before_script:
     - mkdir -p /etc/deploy
 #    - sleep 1000
-    - echo ${KUBECONFIG} > config
+    - echo ${KUBECONFIG} > toto
     - sleep 1000
     - kubectl config set-context $(kubectl config current-context) --namespace=socks-shop
   script:
