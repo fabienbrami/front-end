@@ -34,12 +34,10 @@ deploy:
   image: dtzar/helm-kubectl
   before_script:
     - mkdir -p /etc/deploy
-#    - sleep 1000
     - echo ${kube_config} | base64 -d > ${KUBECONFIG}
-#    - sleep 1000
     - kubectl config set-context $(kubectl config current-context) --namespace=socks-shop
   script:
-    - sleep 1000
+#    - sleep 1000
     - kubectl set image deployment.apps/front-end front-end=${CONTAINER_IMAGE}:1.1.$CI_BUILD_ID --record
   only:
   - master
