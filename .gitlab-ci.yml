@@ -19,8 +19,8 @@ deploy:
   image: lwolf/helm-kubectl-docker:v152_213
   before_script:
     - mkdir -p /etc/deploy
-    - sleep 1000
-    - echo ${KUBECONFIG} | base64 -d > ${KUBECONFIG}
+#    - sleep 1000
+    - echo ${KUBECONFIG} > /root/.kube/config
     - kubectl config set-context $(kubectl config current-context) --namespace=socks-shop
   script:
     - kubectl set image deployment.apps/front-end front-end=${CONTAINER_IMAGE} --record
