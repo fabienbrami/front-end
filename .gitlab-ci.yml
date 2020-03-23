@@ -26,6 +26,7 @@ deploy_AKS:
     - mkdir -p /etc/deploy
     - echo ${AKS} | base64 -d > ${KUBECONFIG}
     - kubectl config set-context $(kubectl config current-context) --namespace=socks-shop
+    - echo 10.42.117.34 aks.geneva3.cloudapp.azurestacksys3.hpecic.net >> /etc/hosts
 
   script:
 #    - sleep 1000
