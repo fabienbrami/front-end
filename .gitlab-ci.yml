@@ -78,7 +78,8 @@ deploy_anthos:
   only:
    refs:
     - branches
-  - stage
+   variables:
+    - $RELEASE == "stage"
 
 
 deploy_AKS:
