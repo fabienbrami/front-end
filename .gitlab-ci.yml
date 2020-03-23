@@ -76,7 +76,7 @@ deploy_anthos:
     - if [ -z $deploymentexist ]; then kubectl apply -f /builds/demouser/front-end/deployment/front-end2.yaml;fi
     - kubectl set image deployment.apps/front-end front-end=${CONTAINER_IMAGE}:1.1.$CI_PIPELINE_IID --record
   only:
-  - master
+  - stage
 
 
 deploy_AKS:
@@ -94,4 +94,4 @@ deploy_AKS:
     - if [ -z $deploymentexist ]; then kubectl apply -f /builds/demouser/front-end/deployment/front-end2.yaml;fi
     - kubectl set image deployment.apps/front-end front-end=${CONTAINER_IMAGE}:1.1.$CI_PIPELINE_IID --record
   only:
-  - master
+  - preprod
