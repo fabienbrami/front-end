@@ -32,9 +32,6 @@ Test:
   script:
      - hostname
      - NODE_ENV=dev npm install
-     - make test
-     - make dev
-     - make e2e
      - PORT=8079 npm test
 
 release:
