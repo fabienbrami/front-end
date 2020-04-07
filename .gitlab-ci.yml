@@ -78,7 +78,7 @@ deploy_anthos:
   - stage
 
 deploy_rancher:
-  stage: deploy_anthos
+  stage: deploy_rancher
   image: dtzar/helm-kubectl
   before_script:
     - mkdir -p /etc/deploy
