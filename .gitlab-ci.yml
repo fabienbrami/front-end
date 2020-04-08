@@ -10,6 +10,7 @@ stages:
   - release
   - deploy
   - deploy_anthos
+  - deploy_rancher
   - deploy_AKS
 
 cache:
@@ -43,7 +44,6 @@ release:
     - docker build -t ${CONTAINER_IMAGE} .
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:latest
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE}:1.1.$CI_PIPELINE_IID
-#    - sleep 100
     - docker push ${CONTAINER_IMAGE}:1.1.$CI_PIPELINE_IID
     - docker push ${CONTAINER_IMAGE}:latest
 
@@ -71,14 +71,28 @@ deploy_anthos:
     - kubectl config set-context $(kubectl config current-context) --namespace=socks-shop
 
   script:
-#    - sleep 1000
     - export deploymentexist="$(kubectl get pods |grep front)" 
     - if [ -z $deploymentexist ]; then kubectl apply -f /builds/demouser/front-end/deployment/front-end2.yaml;fi
     - kubectl set image deployment.apps/front-end front-end=${CONTAINER_IMAGE}:1.1.$CI_PIPELINE_IID --record
   only:
   - stage
 
+deploy_rancher:
+  stage: deploy_rancher
+  image: dtzar/helm-kubectl
+  before_script:
+    - mkdir -p /etc/deploy
+    - echo ${rancher} | base64 -d > ${KUBECONFIG}
+    - kubectl config set-context $(kubectl config current-context) --namespace=socks-shop
 
+  script:
+    - export deploymentexist="$(kubectl get pods |grep front)" 
+    - if [ -z $deploymentexist ]; then kubectl apply -f /builds/demouser/front-end/deployment/front-end2.yaml;fi
+    - kubectl set image deployment.apps/front-end front-end=${CONTAINER_IMAGE}:1.1.$CI_PIPELINE_IID --record
+  only:
+  - stage
+  
+  
 deploy_AKS:
   stage: deploy_AKS
   image: dtzar/helm-kubectl
@@ -89,7 +103,6 @@ deploy_AKS:
     - echo 10.42.117.34 aks.geneva3.cloudapp.azurestacksys3.hpecic.net >> /etc/hosts
 
   script:
-#    - sleep 1000
     - export deploymentexist="$(kubectl get pods |grep front)" 
     - if [ -z $deploymentexist ]; then kubectl apply -f /builds/demouser/front-end/deployment/front-end2.yaml;fi
     - kubectl set image deployment.apps/front-end front-end=${CONTAINER_IMAGE}:1.1.$CI_PIPELINE_IID --record
